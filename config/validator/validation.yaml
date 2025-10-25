@@ -1,26 +1,29 @@
 App\Entity\Location:
     properties:
         latitude:
-            - NotBlank: { message: 'Szerokość geograficzna nie może być pusta.' }
-            - Type: { type: 'numeric', message: 'Szerokość musi być liczbą.' }
+            - NotBlank: { message: 'Szerokość geograficzna nie może być pusta.', groups: ['new', 'edit'] }
+            - Type: { type: 'numeric', message: 'Szerokość musi być liczbą.', groups: ['new', 'edit'] }
             - Range:
                 min: -90
                 max: 90
                 notInRangeMessage: 'Szerokość musi być pomiędzy {{ min }} a {{ max }}.'
+                groups: ['new', 'edit']
         longitude:
-            - NotBlank: { message: 'Długość geograficzna nie może być pusta.' }
-            - Type: { type: 'numeric', message: 'Długość musi być liczbą.' }
+            - NotBlank: { message: 'Długość geograficzna nie może być pusta.', groups: ['new', 'edit'] }
+            - Type: { type: 'numeric', message: 'Długość musi być liczbą.', groups: ['new', 'edit'] }
             - Range:
                 min: -180
                 max: 180
                 notInRangeMessage: 'Długość musi być pomiędzy {{ min }} a {{ max }}.'
+                groups: ['new', 'edit']
 
 App\Entity\Measurement:
     properties:
         celsius:
-            - NotBlank: { message: 'Temperatura nie może być pusta.' }
-            - Type: { type: 'numeric', message: 'Temperatura musi być liczbą.' }
+            - NotBlank: { message: 'Temperatura nie może być pusta.', groups: ['new', 'edit'] }
+            - Type: { type: 'numeric', message: 'Temperatura musi być liczbą.', groups: ['new', 'edit'] }
             - Range:
                 min: -100
                 max: 100
                 notInRangeMessage: 'Temperatura musi być pomiędzy {{ min }} a {{ max }}.'
+                groups: ['new', 'edit']
