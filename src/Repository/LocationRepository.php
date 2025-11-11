@@ -16,6 +16,21 @@ class LocationRepository extends ServiceEntityRepository
         parent::__construct($registry, Location::class);
     }
 
+    /**
+     * Find a single Location by country code and city name (case-insensitive).
+     */
+    public function findByCountryAndCity(string $countryCode, string $city): ?Location
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->where('LOWER(l.country) = LOWER(:country)')
+            ->andWhere('LOWER(l.city) = LOWER(:city)')
+            ->setParameter('country', $countryCode)
+            ->setParameter('city', $city)
+            ->setMaxResults(1);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return Location[] Returns an array of Location objects
     //     */

@@ -6,36 +6,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Location;
-use App\Repository\LocationRepository;
-use App\Repository\MeasurementRepository;
+use App\Service\WeatherUtil;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
 final class WeatherController extends AbstractController
 {
     #[Route('/weather/{city}/{country?}', name: 'app_weather')]
-    public function city(string $city, ?string $country, LocationRepository $locationRepository, MeasurementRepository $repository): Response
+    public function city(
+        #[MapEntity(mapping: ['city' => 'city', 'country' => 'country'])]
+        Location $location, 
+        WeatherUtil $util,
+    ): Response
     {
-        $qb = $locationRepository->createQueryBuilder('l')
-            ->where('LOWER(l.city) = LOWER(:city)')
-            ->setParameter('city', $city);
 
-        if ($country) {
-            $qb->andWhere('LOWER(l.country) = LOWER(:country)')
-                ->setParameter('country', $country);
-        }
-
-        $location = $qb->getQuery()->getOneOrNullResult();
-
-        if (!$location instanceof Location) {
-            throw new NotFoundHttpException(sprintf('Location "%s"%s not found.', $city, $country ? " (".$country.")" : ''));
-        }
-
-        $measurements = $repository->findByLocation($location);
+        $data = $util->getWeatherForLocation($location);
+        //$data = $util->getWeatherForCountryAndCity($location->getCountry(), $location->getCity());
 
         return $this->render('weather/city.html.twig', [
             'controller_name' => 'WeatherController',
             'location' => $location,
-            'measurements' => $measurements,
+            'measurements' => $data['measurements'] ?? [],
         ]);
     }
 }
